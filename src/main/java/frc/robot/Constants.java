@@ -147,6 +147,29 @@ public final class Constants {
 
   
   }
+ 
+  public static final class ClimberConstants {
 
+    //  constants for thee coral subsystem
+
+    public static final int kleftWristCANId = 13; 
+    public static final double kleftWristPower = 0.3;
+   
+    public static final int krightWristCANId = 14; 
+    public static final double krightWristPower = 0.3;
+   
+    public static final int kclimberCANId = 15;
+    public static final double kclimberPower =0.3;
+    
+    public static final double kwristP = 0.3;
+    public static final double kwristI = 0.0;
+    public static final double kwristD = 0.0;
+
+    public static final double kclimberP =0.3;
+    public static final double kclimberI =0.0;
+    public static final double kclimberd =0.0; 
+
+  
+  }
 
 }

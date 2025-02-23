@@ -7,6 +7,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.CoralConstants;
+import frc.robot.Constants.ClimberConstants;
 
 public final class Configs {
     public static final class MAXSwerveModule {
@@ -104,7 +105,8 @@ public final class Configs {
                
                     .outputRange(-1, 1);
 
-
+                climberConfig
+                
                 
 
         }
