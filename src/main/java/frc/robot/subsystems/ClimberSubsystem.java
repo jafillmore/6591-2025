@@ -36,9 +36,9 @@ public class ClimberSubsystem extends SubsystemBase {
   private final RelativeEncoder m_rightWristEncoder;
   private final RelativeEncoder m_climberEncoder;
 
-  private final SparkClosedLoopController m_leftWristSparkClosedLoopController;
-  private final SparkClosedLoopController m_rightWristSparkClosedLoopController;
-  private final SparkClosedLoopController m_climberSparkClosedLoopController;
+  private final SparkClosedLoopController m_leftWristClosedLoopController;
+  private final SparkClosedLoopController m_rightWristClosedLoopController;
+  private final SparkClosedLoopController m_climberClosedLoopController;
 
   public ClimberSubsystem() {
 
@@ -60,7 +60,7 @@ public class ClimberSubsystem extends SubsystemBase {
     m_rightWristSpark.configure(Configs.Climber.rightwristConfig, ResetMode.kResetSafeParameters,
     PersistMode.kPersistParameters);
 
-    m_climbrSpark.configure(Configs.C  limber.wristConfig, ResetMode.kResetSafeParameters,
+    m_climberSpark.configure(Configs.Climber.climberConfig, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
   } 
 

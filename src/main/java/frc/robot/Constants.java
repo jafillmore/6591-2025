@@ -125,6 +125,25 @@ public final class Constants {
     public static final int kDropCoralButton = 1;
     public static final int kFieldRelativeButton = 3;
 
+
+    // button board buttons
+    public static final int kLoadButton = 1;
+    public static final int kL1EButton = 2;
+    public static final int kL2EButton = 3;
+    public static final int kL3EButton = 4;
+    public static final int kL4EButton = 5;
+    public static final int kStowButon = 6;
+    public static final int kL1TButton = 7;
+    public static final int kL2TButton = 8;
+    public static final int kL3TButton = 9;
+    public static final int kL4TButton = 10;
+    public static final int kWristOutButton = 11;
+    public static final int kWristInButton = 12;
+    public static final int kArmStowButton = 15;
+    public static final int kArmClimbButton = 16;
+
+  
+
   }
 
   public static final class CoralConstants {
@@ -167,7 +186,7 @@ public final class Constants {
 
     public static final double kclimberP =0.3;
     public static final double kclimberI =0.0;
-    public static final double kclimberd =0.0; 
+    public static final double kclimberD =0.0; 
 
   
   }
