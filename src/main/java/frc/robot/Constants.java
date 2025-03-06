@@ -154,17 +154,30 @@ public final class Constants {
     public static final double ktroughPower = 0.3;
 
     public static final int kelevatorCANId = 12;
-    public static final double kelevatorPower =0.3;
+    public static final double kelevatorPower = 0.3;
     
     public static final double ktroughP = 0.3;
     public static final double ktroughI = 0.0;
     public static final double ktroughD = 0.0;
 
-    public static final double kelevtorP =0.3;
-    public static final double kelevtorI =0.0;
-    public static final double kelevtord =0.0;
+    public static final double kelevtorP = 0.3;
+    public static final double kelevtorI = 0.0;
+    public static final double kelevtord = 0.0;
 
-  
+    public static final double ktLoadAngle = 5.0;
+    public static final double ktL1Angle = 15.0;
+    public static final double ktL2Angle = 20.0;
+    public static final double ktL3Angle = 25.0;
+    public static final double ktL4Angle = 30.0;
+    public static final double ktStowAngle = 0.0;
+    
+    public static final int kElevatorStow = 0;
+    public static final int kElevatorLoad = 50;
+    public static final int kElevatorL1 = 1000;
+    public static final int kElevatorL2 = 1500;
+    public static final int kElevatorL3 = 2000;
+    public static final int kElevatorL4 = 2500;
+
   }
  
   public static final class ClimberConstants {
@@ -187,6 +200,11 @@ public final class Constants {
     public static final double kclimberP =0.3;
     public static final double kclimberI =0.0;
     public static final double kclimberD =0.0; 
+
+    public static final int kleftWristStow = 0;
+    public static final int kleftWristGrab = 500;
+    public static final int krightWristStow = 0;
+    public static final int krightWristGrab = 500;
 
   
   }

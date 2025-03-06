@@ -29,7 +29,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-
+import frc.robot.subsystems.ClimberSubsystem;
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -47,7 +47,7 @@ public class RobotContainer {
     // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final CoralSubsystem m_coral = new CoralSubsystem();
-  
+  private final ClimberSubsystem m_climb = new ClimberSubsystem();
 
   // The driver's controllers
   Joystick m_leftJoystick = new Joystick(OIConstants.kLeftControllerPort);
@@ -160,6 +160,40 @@ public class RobotContainer {
         .whileTrue(new InstantCommand(
             () -> m_robotDrive.toggleDriveDebugInfo(),
             m_robotDrive));
+
+    // Load Coral
+
+    // Elevator Level 1
+
+    // Elevator Level 2
+
+    // Elevator Level 3
+
+    // Elevator Level 4
+
+    // Stow Trough
+
+    // Trough Level 1
+
+    // Trough Level 2
+
+    // Trough Level 3
+
+    // Trough Level 4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   }
 
