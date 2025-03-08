@@ -4,11 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.Encoder;
-
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -69,5 +64,19 @@ public class ClimberSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   
   }
+
+  public void setLeftWrist (int leftwristPosition) {
+    m_leftWristClosedLoopController.setReference(leftwristPosition, ControlType.kPosition);
+  }
+  
+  public void setRightWrist (int rightwristPosition) {
+    m_rightWristClosedLoopController.setReference(rightwristPosition, ControlType.kPosition);
+  }
+
+  public void setClimber (int climberPosition) {
+    m_climberClosedLoopController.setReference(climberPosition, ControlType.kPosition);
+  }
+
+
 
 }

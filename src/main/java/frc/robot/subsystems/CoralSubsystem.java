@@ -4,10 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.Encoder;
 
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
@@ -21,7 +17,7 @@ import com.revrobotics.RelativeEncoder;
 import frc.robot.Configs;
 import frc.robot.Constants;
 import frc.robot.Constants.CoralConstants;
-
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CoralSubsystem extends SubsystemBase {
@@ -30,11 +26,11 @@ public class CoralSubsystem extends SubsystemBase {
   private final SparkMax m_elevatorSpark; 
     
   private final AbsoluteEncoder m_troughEncoder;
-  private final RelativeEncoder m_elvatorEncoder;
+  private final RelativeEncoder m_elevatorEncoder;
 
   private final SparkClosedLoopController m_troughClosedLoopController;
   private final SparkClosedLoopController m_elevatorClosedLoopController;
-
+  
   //m_troughClosedLoopController = m_troughSpark.getClosedLoopController();
 
   public CoralSubsystem() {
@@ -43,10 +39,10 @@ public class CoralSubsystem extends SubsystemBase {
     m_elevatorSpark = new SparkMax(CoralConstants.kelevatorCANId, MotorType.kBrushless);
 
     m_troughEncoder = m_troughSpark.getAbsoluteEncoder();
-    m_elvatorEncoder = m_elevatorSpark.getEncoder();
+    m_elevatorEncoder = m_elevatorSpark.getEncoder();
 
     m_troughClosedLoopController = m_troughSpark.getClosedLoopController();
-    m_elevatorClosedLoopController = m_troughSpark.getClosedLoopController();
+    m_elevatorClosedLoopController = m_elevatorSpark.getClosedLoopController();
 
 
     // Apply the respective configurations to the SPARKS. Reset parameters before
@@ -66,15 +62,28 @@ public class CoralSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-
-  public void ejectCoral (double CoralPower) {
-    m_troughSpark.set(CoralPower);
-
-  };
-
-
-
   
+
+  public void setElevator (int elevatorPosition) {
+    m_elevatorClosedLoopController.setReference(elevatorPosition, ControlType.kPosition);
+  }
+
+  public void setTrough (double troughPosition) {
+    m_troughClosedLoopController.setReference(troughPosition,ControlType.kPosition);
+  }
+
+  public void zeroElevator () {
+    m_elevatorSpark.set (0.02);
+    Timer.delay (0.7);
+    m_elevatorEncoder.setPosition(0);
+    m_elevatorSpark.set(0);
+  }
+
+
+
+
+
+
 
 
 
