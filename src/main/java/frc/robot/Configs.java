@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.revrobotics.servohub.config.ServoChannelConfig;
+import com.revrobotics.servohub.config.ServoHubConfig;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -65,7 +67,7 @@ public final class Configs {
 
         public static final SparkMaxConfig troughConfig = new SparkMaxConfig();
         public static final SparkMaxConfig elevatorConfig = new SparkMaxConfig();
-
+        public static final ServoHubConfig servoConfig = new ServoHubConfig();
 
         static {
 
@@ -107,7 +109,10 @@ public final class Configs {
                     .outputRange(-1, 1);
 
         
-                
+            servoConfig
+                .channel0.pulseRange(500, 1500, 2500)     
+                .disableBehavior(ServoChannelConfig.BehaviorWhenDisabled.kSupplyPower);
+                           
                 
 
         }

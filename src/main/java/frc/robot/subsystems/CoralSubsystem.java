@@ -13,6 +13,9 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.servohub.ServoChannel;
+import com.revrobotics.servohub.ServoHub;
+import com.revrobotics.servohub.ServoChannel.ChannelId;
 
 import frc.robot.Configs;
 import frc.robot.Constants;
@@ -44,6 +47,8 @@ public class CoralSubsystem extends SubsystemBase {
     m_troughClosedLoopController = m_troughSpark.getClosedLoopController();
     m_elevatorClosedLoopController = m_elevatorSpark.getClosedLoopController();
 
+    ServoHub m_servoHub = new ServoHub (CoralConstants.kServohubCANId);
+    ServoChannel m_Channel0 = m_servoHub.getServoChannel(ChannelId.kChannelId0);
 
     // Apply the respective configurations to the SPARKS. Reset parameters before
     // applying the configuration to bring the SPARK to a known good state. Persist
@@ -54,6 +59,8 @@ public class CoralSubsystem extends SubsystemBase {
     m_elevatorSpark.configure(Configs.Coral.elevatorConfig, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
   
+    m_servoHub.configure(Configs.Coral.servoConfig, ResetMode.kNoResetSafeParameters);
+    
   }
 
 

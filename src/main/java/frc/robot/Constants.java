@@ -178,6 +178,8 @@ public final class Constants {
     public static final int kElevatorL3 = 2000;
     public static final int kElevatorL4 = 2500;
 
+    public static final int kServohubCANId = 16;
+
   }
  
   public static final class ClimberConstants {
