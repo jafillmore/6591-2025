@@ -179,6 +179,12 @@ public final class Constants {
     public static final int kElevatorL4 = 2500;
 
     public static final int kServohubCANId = 16;
+    
+    public static final int kPinUp = 500;
+    public static final int kPinDown = 2500;
+
+    
+    
 
   }
  

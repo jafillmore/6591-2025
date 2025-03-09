@@ -33,7 +33,8 @@ public class CoralSubsystem extends SubsystemBase {
 
   private final SparkClosedLoopController m_troughClosedLoopController;
   private final SparkClosedLoopController m_elevatorClosedLoopController;
-  
+  private final ServoHub m_servoHub; 
+  private final ServoChannel m_Channel0;
   //m_troughClosedLoopController = m_troughSpark.getClosedLoopController();
 
   public CoralSubsystem() {
@@ -47,8 +48,8 @@ public class CoralSubsystem extends SubsystemBase {
     m_troughClosedLoopController = m_troughSpark.getClosedLoopController();
     m_elevatorClosedLoopController = m_elevatorSpark.getClosedLoopController();
 
-    ServoHub m_servoHub = new ServoHub (CoralConstants.kServohubCANId);
-    ServoChannel m_Channel0 = m_servoHub.getServoChannel(ChannelId.kChannelId0);
+    m_servoHub = new ServoHub (CoralConstants.kServohubCANId);
+    m_Channel0 = m_servoHub.getServoChannel(ChannelId.kChannelId0);
 
     // Apply the respective configurations to the SPARKS. Reset parameters before
     // applying the configuration to bring the SPARK to a known good state. Persist
@@ -59,8 +60,8 @@ public class CoralSubsystem extends SubsystemBase {
     m_elevatorSpark.configure(Configs.Coral.elevatorConfig, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
   
-    m_servoHub.configure(Configs.Coral.servoConfig, ResetMode.kNoResetSafeParameters);
-    
+    m_servoHub.configure(Configs.Coral.servoConfig,ServoHub.ResetMode.kNoResetSafeParameters);
+    m_servoHub.setBankPulsePeriod (ServoHub.Bank.kBank0_2,1500);
   }
 
 
@@ -86,8 +87,13 @@ public class CoralSubsystem extends SubsystemBase {
     m_elevatorSpark.set(0);
   }
 
+  public void pinUp () {
+    m_Channel0.setPulseWidth(CoralConstants.kPinUp);
+  }
 
-
+  public void pinDown () {
+    m_Channel0.setPulseWidth(CoralConstants.kPinDown);
+  }
 
 
 
