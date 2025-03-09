@@ -87,13 +87,10 @@ public class CoralSubsystem extends SubsystemBase {
     m_elevatorSpark.set(0);
   }
 
-  public void pinUp () {
-    m_Channel0.setPulseWidth(CoralConstants.kPinUp);
+  public void pinSet (int pinpsn) {
+    m_Channel0.setPulseWidth(pinpsn);
   }
 
-  public void pinDown () {
-    m_Channel0.setPulseWidth(CoralConstants.kPinDown);
-  }
 
 
 
