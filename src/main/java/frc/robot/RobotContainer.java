@@ -174,6 +174,9 @@ public class RobotContainer {
             new InstantCommand (
             () -> m_coral.setElevator(CoralConstants.kElevatorLoad),
             m_coral)));
+
+
+    //  Stow Corral and Elevator
            
 
 
@@ -223,7 +226,16 @@ public class RobotContainer {
 
 
 
+    // Wrist Out
 
+
+    // Wrist In
+
+
+    //  Arms Up
+
+
+    //  Arms Down
 
 
 
