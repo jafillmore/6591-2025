@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.CoralConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -177,7 +178,15 @@ public class RobotContainer {
 
 
     //  Stow Corral and Elevator
-           
+    new JoystickButton (m_buttonboard,OIConstants.kStowButon)
+    .whileTrue(Commands.parallel(
+         new InstantCommand(
+        () -> m_coral.setTrough(CoralConstants.ktStowAngle),
+        m_coral),
+        new InstantCommand (
+        () -> m_coral.setElevator(CoralConstants.kElevatorStow),
+        m_coral)));
+
 
 
 
@@ -227,16 +236,37 @@ public class RobotContainer {
 
 
     // Wrist Out
-
-
+    new JoystickButton (m_buttonboard,OIConstants.kWristOutButton)
+    .whileTrue(Commands.parallel(
+        new InstantCommand(
+        () -> m_climb.setLeftWrist(ClimberConstants.kleftWristGrab),
+        m_climb), 
+        new InstantCommand(
+        () -> m_climb.setRightWrist(ClimberConstants.krightWristGrab),
+        m_climb)));
     // Wrist In
-
+    new JoystickButton (m_buttonboard,OIConstants.kWristInButton)
+    .whileTrue(Commands.parallel(
+        new InstantCommand(
+        () -> m_climb.setLeftWrist(ClimberConstants.kleftWristStow),
+        m_climb), 
+        new InstantCommand(
+        () -> m_climb.setRightWrist(ClimberConstants.krightWristStow),
+        m_climb)));
 
     //  Arms Up
-
+    new JoystickButton (m_buttonboard,OIConstants.kArmStowButton)
+    .whileTrue( 
+        new InstantCommand(
+        () -> m_climb.setRightWrist(ClimberConstants.karmsUp),
+        m_climb));
 
     //  Arms Down
-
+    new JoystickButton (m_buttonboard,OIConstants.kArmClimbButton)
+    .whileTrue( 
+        new InstantCommand(
+        () -> m_climb.setRightWrist(ClimberConstants.karmsDown),
+        m_climb));
 
 
 
