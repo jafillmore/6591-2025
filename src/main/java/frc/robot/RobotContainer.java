@@ -44,7 +44,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 public class RobotContainer {
   
     Optional<Alliance> ally = DriverStation.getAlliance();
-    private String alli = "None! (WTF?)";
+    private String alli = "None! (What's up with that?)";
 
     UsbCamera camera1;
     VideoSink server;
