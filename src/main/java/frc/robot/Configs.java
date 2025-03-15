@@ -1,5 +1,7 @@
 package frc.robot;
 
+import javax.net.ssl.TrustManager;
+
 import com.revrobotics.servohub.config.ServoChannelConfig;
 import com.revrobotics.servohub.config.ServoHubConfig;
 import com.revrobotics.spark.SparkMax;
@@ -81,14 +83,14 @@ public final class Configs {
                 troughConfig.absoluteEncoder
                     // Invert the turning encoder, since the output shaft rotates in the opposite
                     // direction of the steering motor in the MAXSwerve Module.
-                    .inverted(true)
+                    .inverted(false)
                     .positionConversionFactor(troughRotationFactor) // radians
                     .velocityConversionFactor(troughRotationFactor / 60.0); // radians per second
                 troughConfig.closedLoop
                     .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
                     // These are example gains you may need to them for your own robot!
                     .pid(CoralConstants.ktroughP, CoralConstants.ktroughI, CoralConstants.ktroughD)
-                    .outputRange(-1, 1)
+                    .outputRange(-0.08, 0.08)
                     // Enable PID wrap around for the turning motor. This will allow the PID
                     // controller to go through 0 to get to the setpoint i.e. going from 350 degrees
                     // to 10 degrees will go through 0 rather than the other direction which is a
@@ -99,7 +101,7 @@ public final class Configs {
             elevatorConfig
                     .idleMode(IdleMode.kBrake)
                     .smartCurrentLimit(50)
-                    .inverted(false);
+                    .inverted(true);
 
             elevatorConfig.closedLoop
                     .feedbackSensor(FeedbackSensor.kPrimaryEncoder)

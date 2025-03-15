@@ -171,43 +171,42 @@ public class RobotContainer {
         .whileTrue(Commands.parallel(
              new InstantCommand(
             () -> m_coral.setTrough(CoralConstants.ktLoadAngle),
-            m_coral),
-            new InstantCommand (
+            m_coral)
+            /*new InstantCommand (
             () -> m_coral.setElevator(CoralConstants.kElevatorLoad),
-            m_coral)));
+            m_coral)*/
+            ));
 
 
     //  Stow Corral and Elevator
     new JoystickButton (m_buttonboard,OIConstants.kStowButon)
-    .whileTrue(Commands.parallel(
-         new InstantCommand(
-        () -> m_coral.setTrough(CoralConstants.ktStowAngle),
-        m_coral),
+    .onTrue(
         new InstantCommand (
         () -> m_coral.setElevator(CoralConstants.kElevatorStow),
-        m_coral)));
+        m_coral)
+        );
 
 
 
 
     // Elevator Level 1
     new JoystickButton (m_buttonboard,OIConstants.kL1EButton)
-    .whileTrue(new InstantCommand(
+    .onTrue    (new InstantCommand(
         () -> m_coral.setElevator(CoralConstants.kElevatorL1),
         m_coral));
     // Elevator Level 2
     new JoystickButton (m_buttonboard,OIConstants.kL2EButton)
-    .whileTrue(new InstantCommand(
+    .onTrue(new InstantCommand(
         () -> m_coral.setElevator(CoralConstants.kElevatorL2),
         m_coral));
     // Elevator Level 3
     new JoystickButton (m_buttonboard,OIConstants.kL3EButton)
-    .whileTrue(new InstantCommand(
+    .onTrue(new InstantCommand(
         () -> m_coral.setElevator(CoralConstants.kElevatorL3),
         m_coral));
     // Elevator Level 4
     new JoystickButton (m_buttonboard,OIConstants.kL4EButton)
-    .whileTrue(new InstantCommand(
+    .onTrue(new InstantCommand(
         () -> m_coral.setElevator(CoralConstants.kElevatorL4),
         m_coral));
     // Stow Trough
@@ -240,19 +239,24 @@ public class RobotContainer {
     .whileTrue(Commands.parallel(
         new InstantCommand(
         () -> m_climb.setLeftWrist(ClimberConstants.kleftWristGrab),
-        m_climb), 
+        m_climb) /* , 
         new InstantCommand(
         () -> m_climb.setRightWrist(ClimberConstants.krightWristGrab),
-        m_climb)));
+        m_climb)
+        */
+        
+        ));
     // Wrist In
     new JoystickButton (m_buttonboard,OIConstants.kWristInButton)
     .whileTrue(Commands.parallel(
         new InstantCommand(
         () -> m_climb.setLeftWrist(ClimberConstants.kleftWristStow),
-        m_climb), 
+        m_climb) /*, 
         new InstantCommand(
         () -> m_climb.setRightWrist(ClimberConstants.krightWristStow),
-        m_climb)));
+        m_climb)
+        */
+        ));
 
     //  Arms Up
     new JoystickButton (m_buttonboard,OIConstants.kArmStowButton)
@@ -327,7 +331,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return m_chooser.getSelected();
+    return Autos.redAuto1(m_robotDrive);
   }
 
 

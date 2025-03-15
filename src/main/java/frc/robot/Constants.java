@@ -150,36 +150,36 @@ public final class Constants {
 
     //  constants for thee coral subsystem
 
-    public static final int ktroughCANId = 11; 
-    public static final double ktroughPower = 0.3;
+    public static final int ktroughCANId = 13; 
+    public static final double ktroughPower = 0.08;
 
     public static final int kelevatorCANId = 10;
     public static final double kelevatorPower = 0.3;
     
-    public static final double ktroughP = 0.3;
+    public static final double ktroughP = 0.08;
     public static final double ktroughI = 0.0;
-    public static final double ktroughD = 0.0;
+    public static final double ktroughD = 0.01;
 
-    public static final double kelevtorP = 0.3;
+    public static final double kelevtorP = 0.6;
     public static final double kelevtorI = 0.0;
-    public static final double kelevtord = 0.0;
+    public static final double kelevtord = 0.01;
 
-    public static final double ktLoadAngle = 5.0;
-    public static final double ktL1Angle = 15.0;
-    public static final double ktL2Angle = 20.0;
-    public static final double ktL3Angle = 25.0;
-    public static final double ktL4Angle = 30.0;
-    public static final double ktStowAngle = 0.0;
+    public static final double ktLoadAngle = .087;//5.0;
+    public static final double ktL1Angle = 20.0;
+    public static final double ktL2Angle = 30.0;
+    public static final double ktL3Angle = 50.0;
+    public static final double ktL4Angle = 60.0;
+    public static final double ktStowAngle = 90.0;
     
     public static final int kElevatorStow = 0;
-    public static final int kElevatorLoad = 50;
-    public static final int kElevatorL1 = 1000;
-    public static final int kElevatorL2 = 1500;
-    public static final int kElevatorL3 = 2000;
-    public static final int kElevatorL4 = 2500;
+    public static final int kElevatorLoad = 100;
+    public static final int kElevatorL1 = 100;
+    public static final int kElevatorL2 = 125;
+    public static final int kElevatorL3 = 130;
+    public static final int kElevatorL4 = 230;
 
     public static final int kServohubCANId = 16;
-    
+      
     public static final int kPinUp = 500;
     public static final int kPinDown = 2500;
 
@@ -195,7 +195,7 @@ public final class Constants {
     public static final int kleftWristCANId = 11; 
     public static final double kleftWristPower = 0.3;
    
-    public static final int krightWristCANId = 13; 
+    public static final int krightWristCANId = 9; 
     public static final double krightWristPower = 0.3;
    
     public static final int kclimberCANId = 12;
@@ -210,11 +210,11 @@ public final class Constants {
     public static final double kclimberD =0.0; 
 
     public static final int kleftWristStow = 0;
-    public static final int kleftWristGrab = 500;
+    public static final int kleftWristGrab = 5;
     public static final int krightWristStow = 0;
-    public static final int krightWristGrab = 500;
+    public static final int krightWristGrab = 5;
     public static final int karmsUp =0;
-    public static final int karmsDown =1000;
+    public static final int karmsDown =5;
   
   }
 
