@@ -15,8 +15,8 @@ import com.revrobotics.RelativeEncoder;
 
 import frc.robot.Configs;
 import frc.robot.Constants;
-import frc.robot.Constants.ClimberConstants; 
-
+import frc.robot.Constants.ClimberConstants;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -34,6 +34,9 @@ public class ClimberSubsystem extends SubsystemBase {
   private final SparkClosedLoopController m_leftWristClosedLoopController;
   private final SparkClosedLoopController m_rightWristClosedLoopController;
   private final SparkClosedLoopController m_climberClosedLoopController;
+
+    //Variables for System Debugging
+  private boolean ClimberSystemDebug = true;
 
   public ClimberSubsystem() {
 
@@ -62,6 +65,8 @@ public class ClimberSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    toggleClimberDebugInfo();
   
   }
 
@@ -86,6 +91,17 @@ public class ClimberSubsystem extends SubsystemBase {
     m_climberClosedLoopController.setReference(climberPosition, ControlType.kPosition);
   }
 
+  //  System Debug Info to display
+  public void toggleClimberDebugInfo(){
+    if (ClimberSystemDebug) {
+      // IMU Status
+      SmartDashboard.putNumber(  "Left Wrist Actual Position", m_leftWristEncoder.getPosition());
+      SmartDashboard.putNumber(  "Right Wrist Actual Postion", m_rightWristEncoder.getPosition());
+      SmartDashboard.putNumber("Climber Actual Position", m_climberEncoder.getPosition());
 
+
+   
+    }
+  }
 
 }

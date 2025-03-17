@@ -39,7 +39,7 @@ public class CoralSubsystem extends SubsystemBase {
   private final ServoHub m_servoHub; 
   private final ServoChannel m_Channel0;
 
-    //Variables for Drive System Debugging
+  //Variables for System Debugging
   private boolean CoralSystemDebug = true;
   
   public CoralSubsystem() {
@@ -112,7 +112,7 @@ public class CoralSubsystem extends SubsystemBase {
 
   }
 
-//  Drive System Debug Info to display
+//  System Debug Info to display
   public void coaralDebugInfo(){
     if (CoralSystemDebug) {
       // IMU Status

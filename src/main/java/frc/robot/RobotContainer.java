@@ -136,17 +136,26 @@ public class RobotContainer {
             () -> m_robotDrive.toggleFieldRelative(),
             m_robotDrive));
 
-    //  Toggle Extra Info to Shuffleboard
-    new JoystickButton(m_leftJoystick, OIConstants.kdriveDebugDataButton)
-        .whileTrue(new InstantCommand(
-            () -> m_robotDrive.toggleDriveDebugInfo(),
-            m_robotDrive));
-
-            //  Toggle Extra Info to Shuffleboard
+    
+    //  Toggle Coral Info to Shuffleboard
     new JoystickButton(m_buttonboard, OIConstants.kCoralInfoButton)
     .whileTrue(new InstantCommand(
         () -> m_coral.toggleCoralebugInfo(),
         m_coral));
+
+    //  Toggle Climber Info to Shuffleboard
+    new JoystickButton(m_buttonboard, OIConstants.kClimberInfoButton)
+    .whileTrue(new InstantCommand(
+        () -> m_climb.toggleClimberDebugInfo(),
+        m_climb));
+ 
+    //  Toggle Drive Info to Shuffleboard
+    new JoystickButton(m_leftJoystick, OIConstants.kdriveInfoButton)
+    .whileTrue(new InstantCommand(
+        () -> m_robotDrive.toggleDriveDebugInfo(),
+         m_robotDrive));
+
+    
 
     //  eject Coral
     new JoystickButton(m_rightJoystick, OIConstants.kDropCoralButton)
@@ -159,7 +168,7 @@ public class RobotContainer {
         m_coral));
         
     //  Toggle Extra Info to Shuffleboard
-    new JoystickButton(m_leftJoystick, OIConstants.kdriveDebugDataButton)
+    new JoystickButton(m_leftJoystick, OIConstants.kdriveInfoButton)
         .whileTrue(new InstantCommand(
             () -> m_robotDrive.toggleDriveDebugInfo(),
             m_robotDrive));
@@ -331,10 +340,13 @@ public class RobotContainer {
     Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
         // Start at the origin facing the +X direction
         new Pose2d(0, 0, new Rotation2d(0)),
+        // Rotate 180deg
+        //  List.of (new Rotation2d(90), new Rotation2d(90), 
+        //new Pose2d(0,0,new Rotation2d(180),
         // Pass through these two interior waypoints, making an 's' curve path
-          List.of(new Translation2d(0.25,0), new Translation2d(0.75, 0)),
+         List.of(new Translation2d(0.25,0), new Translation2d(0.75, 0)),
         // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(1, 0, new Rotation2d(0)),
+        new Pose2d(1, 0, new Rotation2d(180)),
         config);
 
     var thetaController = new ProfiledPIDController(

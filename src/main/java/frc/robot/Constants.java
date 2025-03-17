@@ -115,7 +115,7 @@ public final class Constants {
     public static final int kSwitchCameraButton =1; //Left Trigger to switch between two cameras
     public static final int kSetXButton = 4; // Need to decide which stick and button we should use...
     public static final int kGyroRestButton = 5;  // Need to decide which stick and button we should use...
-    public static final int kdriveDebugDataButton = 8; // maybe move to button board?
+
 
 
 
@@ -142,7 +142,8 @@ public final class Constants {
     public static final int kArmsUpButton = 15;
     public static final int kArmsDownButton = 16;
     public static final int kCoralInfoButton = 24;
-
+    public static final int kClimberInfoButton = 25;
+    public static final int kdriveInfoButton = 26; // Moved from left stick
   
 
   }
