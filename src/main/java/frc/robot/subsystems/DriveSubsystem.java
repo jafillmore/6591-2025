@@ -49,7 +49,7 @@ public class DriveSubsystem extends SubsystemBase {
   public static final Pigeon2 m_pidgey = new Pigeon2(1, "rio");
 
     //Variables for Drive System Debugging
-    private boolean driveSystemDebug = false;
+    public boolean DriveSystemDebug = false;
     private int fieldRelativeCount = 0;
     private int imuResetCount = 0;
 
@@ -216,23 +216,24 @@ public class DriveSubsystem extends SubsystemBase {
       
     }
   
-  //Display Pigeon (Navigation) Debug Data
+  //Toggle Drive Debug Info
   public void toggleDriveDebugInfo (){
-    driveSystemDebug = !driveSystemDebug;
+    DriveSystemDebug = !DriveSystemDebug;
     return;    
 
   }
 
+
+
   //  Drive System Debug Info to display
   public void driveDebugInfo(){
-    if (driveSystemDebug) {
+    if (DriveSystemDebug) {
       // IMU Status
-        SmartDashboard.putNumber(   "IMU Yaw Rate (DPS)", m_pidgey.getRate());
-        SmartDashboard.putNumber(   "IMU_Pitch", m_pidgey.getPitch().getValueAsDouble());
-        SmartDashboard.putNumber(   "IMU_Roll",       m_pidgey.getRoll().getValueAsDouble());
-        SmartDashboard.putBoolean(  "Field Relative", DriveConstants.driveFieldRelative);
-        SmartDashboard.putNumber(   "FC Toggle Count",       fieldRelativeCount);
-        SmartDashboard.putNumber(   "IMU Reset Count",       imuResetCount);
+      SmartDashboard.putBoolean(   "IMU Is Good",BaseStatusSignal.isAllGood());        
+      SmartDashboard.putNumber(   "Yaw 2D", m_pidgey.getRotation2d().getDegrees());
+      SmartDashboard.putBoolean(  "Field Relative", DriveConstants.driveFieldRelative);
+      SmartDashboard.putNumber(   "FC Toggle Count",       fieldRelativeCount);
+      SmartDashboard.putNumber(   "IMU Reset Count",       imuResetCount);
       
     }
   }

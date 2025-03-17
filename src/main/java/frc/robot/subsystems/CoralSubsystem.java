@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.servohub.ServoChannel;
@@ -20,7 +21,9 @@ import com.revrobotics.servohub.ServoChannel.ChannelId;
 import frc.robot.Configs;
 import frc.robot.Constants;
 import frc.robot.Constants.CoralConstants;
+import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CoralSubsystem extends SubsystemBase {
@@ -35,8 +38,10 @@ public class CoralSubsystem extends SubsystemBase {
   private final SparkClosedLoopController m_elevatorClosedLoopController;
   private final ServoHub m_servoHub; 
   private final ServoChannel m_Channel0;
-  //m_troughClosedLoopController = m_troughSpark.getClosedLoopController();
 
+    //Variables for Drive System Debugging
+  private boolean CoralSystemDebug = false;
+  
   public CoralSubsystem() {
 
     m_troughSpark = new SparkMax(CoralConstants.ktroughCANId, MotorType.kBrushless);
@@ -68,6 +73,7 @@ public class CoralSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    coaralDebugInfo();
   }
 
   
@@ -79,6 +85,13 @@ public class CoralSubsystem extends SubsystemBase {
   public void setTrough (double troughPosition) {
     m_troughClosedLoopController.setReference(troughPosition,ControlType.kPosition);
   }
+
+  public void stow (int elevatorPsn, double troughPsn) {
+    setElevator(elevatorPsn);
+    setTrough(troughPsn);
+  }
+
+
 
   public void zeroElevator () {
     m_elevatorSpark.set (0.02);
@@ -92,9 +105,22 @@ public class CoralSubsystem extends SubsystemBase {
   }
 
 
+  //Toggle Drive Debug Info
+  public void toggleCoralebugInfo (){
+    CoralSystemDebug = !CoralSystemDebug;
+    return;    
 
+  }
 
-
-
+//  Drive System Debug Info to display
+  public void coaralDebugInfo(){
+    if (CoralSystemDebug) {
+      // IMU Status
+      SmartDashboard.putNumber(  "Trough Actual Position", m_troughEncoder.getPosition());
+      ///SmartDashboard.putNumber("Target Postion",
+      SmartDashboard.putNumber(  "Elevator Actual Postion", m_elevatorEncoder.getPosition());
+   
+    }
+  }
 
 }

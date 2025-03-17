@@ -139,8 +139,9 @@ public final class Constants {
     public static final int kL4TButton = 10;
     public static final int kWristOutButton = 11;
     public static final int kWristInButton = 12;
-    public static final int kArmStowButton = 15;
-    public static final int kArmClimbButton = 16;
+    public static final int kArmsUpButton = 15;
+    public static final int kArmsDownButton = 16;
+    public static final int kCoralInfoButton = 24;
 
   
 
@@ -156,27 +157,27 @@ public final class Constants {
     public static final int kelevatorCANId = 10;
     public static final double kelevatorPower = 0.3;
     
-    public static final double ktroughP = 0.08;
+    public static final double ktroughP = 0.5;
     public static final double ktroughI = 0.0;
     public static final double ktroughD = 0.01;
 
+    public static final double ktLoadAngle = 0.25;
+    public static final double ktL1Angle = 0.75;
+    public static final double ktL2Angle = 1.0;
+    public static final double ktL3Angle = 1.25;
+    public static final double ktL4Angle = 2.25;
+    public static final double ktStowAngle =0.175;
+    
     public static final double kelevtorP = 0.6;
     public static final double kelevtorI = 0.0;
     public static final double kelevtord = 0.01;
 
-    public static final double ktLoadAngle = .087;//5.0;
-    public static final double ktL1Angle = 20.0;
-    public static final double ktL2Angle = 30.0;
-    public static final double ktL3Angle = 50.0;
-    public static final double ktL4Angle = 60.0;
-    public static final double ktStowAngle = 90.0;
-    
     public static final int kElevatorStow = 0;
     public static final int kElevatorLoad = 100;
     public static final int kElevatorL1 = 100;
     public static final int kElevatorL2 = 125;
     public static final int kElevatorL3 = 130;
-    public static final int kElevatorL4 = 230;
+    public static final int kElevatorL4 = 220; // 230 was at the limit / too tight
 
     public static final int kServohubCANId = 16;
       
@@ -210,11 +211,11 @@ public final class Constants {
     public static final double kclimberD =0.0; 
 
     public static final int kleftWristStow = 0;
-    public static final int kleftWristGrab = 5;
+    public static final int kleftWristGrab = 7;
     public static final int krightWristStow = 0;
-    public static final int krightWristGrab = 5;
-    public static final int karmsUp =0;
-    public static final int karmsDown =5;
+    public static final int krightWristGrab = 7;
+    public static final int karmsUp =7;
+    public static final int karmsDown =0;
   
   }
 

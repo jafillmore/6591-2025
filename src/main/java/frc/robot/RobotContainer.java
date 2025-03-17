@@ -5,12 +5,21 @@
 package frc.robot;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance; 
 import edu.wpi.first.wpilibj.Joystick;
@@ -25,12 +34,13 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.CoralConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.Autos;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import pabeles.concurrency.ConcurrencyOps.NewInstance;
@@ -59,16 +69,6 @@ public class RobotContainer {
   Joystick m_rightJoystick = new Joystick(OIConstants.kRightControllerPort);
   Joystick m_buttonboard = new Joystick(OIConstants.kButtonBoardPort);
   
-  // A chooser for autonomous commands
-  SendableChooser<Command> m_chooser = new SendableChooser<>();
-
-  // Define Autonomous Commands
-    private final Command m_redAuto1 = Autos.redAuto1(m_robotDrive);
-    private final Command m_redAuto2 = Autos.redAuto2(m_robotDrive);
-    private final Command m_redAuto3 = Autos.redAuto3(m_robotDrive);
-    private final Command m_blueAuto1 = Autos.blueAuto1(m_robotDrive);
-    private final Command m_blueAuto2 = Autos.blueAuto2(m_robotDrive);
-    private final Command m_blueAuto3 = Autos.blueAuto3(m_robotDrive);
 
  
   /**
@@ -91,21 +91,7 @@ public class RobotContainer {
 
      //  Configure dashboard
     configureDashboard();
-    
-    
-    // Add commands to the autonomous command chooser
-    if (ally.get() == Alliance.Red){
-        m_chooser.setDefaultOption("Red 1", m_redAuto1);
-        m_chooser.addOption("Red 2", m_redAuto2);
-        m_chooser.addOption("Red 3", m_redAuto3);
-    }
-
-    if (ally.get() == Alliance.Blue){
-        m_chooser.setDefaultOption("Blue 1", m_blueAuto1);
-        m_chooser.addOption("Blue 2", m_blueAuto2);
-        m_chooser.addOption("Blue 3", m_blueAuto3);
-    }   
-
+       
     
     // Configure default commands
     m_robotDrive.setDefaultCommand(
@@ -150,6 +136,18 @@ public class RobotContainer {
             () -> m_robotDrive.toggleFieldRelative(),
             m_robotDrive));
 
+    //  Toggle Extra Info to Shuffleboard
+    new JoystickButton(m_leftJoystick, OIConstants.kdriveDebugDataButton)
+        .whileTrue(new InstantCommand(
+            () -> m_robotDrive.toggleDriveDebugInfo(),
+            m_robotDrive));
+
+            //  Toggle Extra Info to Shuffleboard
+    new JoystickButton(m_buttonboard, OIConstants.kCoralInfoButton)
+    .whileTrue(new InstantCommand(
+        () -> m_coral.toggleCoralebugInfo(),
+        m_coral));
+
     //  eject Coral
     new JoystickButton(m_rightJoystick, OIConstants.kDropCoralButton)
     .debounce(0.1)   
@@ -182,7 +180,7 @@ public class RobotContainer {
     new JoystickButton (m_buttonboard,OIConstants.kStowButon)
     .onTrue(
         new InstantCommand (
-        () -> m_coral.setElevator(CoralConstants.kElevatorStow),
+        () -> m_coral.stow(CoralConstants.kElevatorStow, CoralConstants.ktStowAngle),
         m_coral)
         );
 
@@ -234,42 +232,35 @@ public class RobotContainer {
 
 
 
-    // Wrist Out
+    // Wrists Out
     new JoystickButton (m_buttonboard,OIConstants.kWristOutButton)
     .whileTrue(Commands.parallel(
         new InstantCommand(
-        () -> m_climb.setLeftWrist(ClimberConstants.kleftWristGrab),
-        m_climb) /* , 
-        new InstantCommand(
-        () -> m_climb.setRightWrist(ClimberConstants.krightWristGrab),
+        () -> m_climb.setWrists(ClimberConstants.kleftWristGrab, ClimberConstants.krightWristGrab),
         m_climb)
-        */
+        
         
         ));
     // Wrist In
     new JoystickButton (m_buttonboard,OIConstants.kWristInButton)
     .whileTrue(Commands.parallel(
         new InstantCommand(
-        () -> m_climb.setLeftWrist(ClimberConstants.kleftWristStow),
-        m_climb) /*, 
-        new InstantCommand(
-        () -> m_climb.setRightWrist(ClimberConstants.krightWristStow),
-        m_climb)
-        */
+        () -> m_climb.setWrists(ClimberConstants.kleftWristStow, ClimberConstants.krightWristStow),
+        m_climb) 
         ));
 
     //  Arms Up
-    new JoystickButton (m_buttonboard,OIConstants.kArmStowButton)
+    new JoystickButton (m_buttonboard,OIConstants.kArmsUpButton)
     .whileTrue( 
         new InstantCommand(
-        () -> m_climb.setRightWrist(ClimberConstants.karmsUp),
+        () -> m_climb.setClimber(ClimberConstants.karmsUp),
         m_climb));
 
     //  Arms Down
-    new JoystickButton (m_buttonboard,OIConstants.kArmClimbButton)
+    new JoystickButton (m_buttonboard,OIConstants.kArmsDownButton)
     .whileTrue( 
         new InstantCommand(
-        () -> m_climb.setRightWrist(ClimberConstants.karmsDown),
+        () -> m_climb.setClimber(ClimberConstants.karmsDown),
         m_climb));
 
 
@@ -291,13 +282,11 @@ public class RobotContainer {
     }
   
     SmartDashboard.putString(   "Alliance", alli);
+    
         
     
     
-    // Put the chooser on the dashboard
-    Shuffleboard.getTab("Autonomous").add(m_chooser);
-    // Put subsystems to dashboard.
-    //Shuffleboard.getTab("Drivetrain").add(m_robotDrive);
+    
     
     // Log Shuffleboard events for command initialize, execute, finish, interrupt
     CommandScheduler.getInstance()
@@ -331,7 +320,44 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return Autos.redAuto1(m_robotDrive);
+    // Create config for trajectory
+    TrajectoryConfig config = new TrajectoryConfig(
+        AutoConstants.kMaxSpeedMetersPerSecond,
+        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+        // Add kinematics to ensure max speed is actually obeyed
+        .setKinematics(DriveConstants.kDriveKinematics);
+
+    // An example trajectory to follow. All units in meters.
+    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+        // Start at the origin facing the +X direction
+        new Pose2d(0, 0, new Rotation2d(0)),
+        // Pass through these two interior waypoints, making an 's' curve path
+          List.of(new Translation2d(0.25,0), new Translation2d(0.75, 0)),
+        // End 3 meters straight ahead of where we started, facing forward
+        new Pose2d(1, 0, new Rotation2d(0)),
+        config);
+
+    var thetaController = new ProfiledPIDController(
+        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+        exampleTrajectory,
+        m_robotDrive::getPose, // Functional interface to feed supplier
+        DriveConstants.kDriveKinematics,
+
+        // Position controllers
+        new PIDController(AutoConstants.kPXController, 0, 0),
+        new PIDController(AutoConstants.kPYController, 0, 0),
+        thetaController,
+        m_robotDrive::setModuleStates,
+        m_robotDrive);
+
+    // Reset odometry to the starting pose of the trajectory.
+    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+
+    // Run path following command, then stop at the end.
+    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
   }
 
 
