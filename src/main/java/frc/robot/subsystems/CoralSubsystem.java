@@ -40,7 +40,7 @@ public class CoralSubsystem extends SubsystemBase {
   private final ServoChannel m_Channel0;
 
     //Variables for Drive System Debugging
-  private boolean CoralSystemDebug = false;
+  private boolean CoralSystemDebug = true;
   
   public CoralSubsystem() {
 
