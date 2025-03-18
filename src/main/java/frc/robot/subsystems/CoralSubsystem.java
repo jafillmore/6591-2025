@@ -86,7 +86,7 @@ public class CoralSubsystem extends SubsystemBase {
     m_troughClosedLoopController.setReference(troughPosition,ControlType.kPosition);
   }
 
-  public void stow (int elevatorPsn, double troughPsn) {
+  public void setBothELTR (int elevatorPsn, double troughPsn) {
     setElevator(elevatorPsn);
     setTrough(troughPsn);
   }

@@ -162,23 +162,23 @@ public final class Constants {
     public static final double ktroughI = 0.0;
     public static final double ktroughD = 0.01;
 
-    public static final double ktLoadAngle = 0.25;
-    public static final double ktL1Angle = 0.75;
-    public static final double ktL2Angle = 1.0;
-    public static final double ktL3Angle = 1.25;
-    public static final double ktL4Angle = 2.25;
-    public static final double ktStowAngle =0.175;
+    public static final double ktLoadAngle = 0.98;
+    public static final double ktL1Angle = 2.0;
+    public static final double ktL2Angle = 2.0;
+    public static final double ktL3Angle = 2.0;
+    public static final double ktL4Angle = 2.1; //2.5 was too much
+    public static final double ktStowAngle =0.075;
     
     public static final double kelevtorP = 0.6;
     public static final double kelevtorI = 0.0;
     public static final double kelevtord = 0.01;
 
     public static final int kElevatorStow = 0;
-    public static final int kElevatorLoad = 100;
-    public static final int kElevatorL1 = 100;
-    public static final int kElevatorL2 = 125;
-    public static final int kElevatorL3 = 130;
-    public static final int kElevatorL4 = 220; // 230 was at the limit / too tight
+    public static final int kElevatorLoad = 0;
+    public static final int kElevatorL1 = 20;
+    public static final int kElevatorL2 = 50;
+    public static final int kElevatorL3 = 120;
+    public static final int kElevatorL4 = 221; // 230 was at the limit / too tight
 
     public static final int kServohubCANId = 16;
       

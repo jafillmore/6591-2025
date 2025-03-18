@@ -177,11 +177,8 @@ public class RobotContainer {
     new JoystickButton (m_buttonboard,OIConstants.kLoadButton)
         .whileTrue(Commands.parallel(
              new InstantCommand(
-            () -> m_coral.setTrough(CoralConstants.ktLoadAngle),
+            () -> m_coral.setBothELTR(CoralConstants.kElevatorLoad,CoralConstants.ktLoadAngle),
             m_coral)
-            /*new InstantCommand (
-            () -> m_coral.setElevator(CoralConstants.kElevatorLoad),
-            m_coral)*/
             ));
 
 
@@ -189,7 +186,7 @@ public class RobotContainer {
     new JoystickButton (m_buttonboard,OIConstants.kStowButon)
     .onTrue(
         new InstantCommand (
-        () -> m_coral.stow(CoralConstants.kElevatorStow, CoralConstants.ktStowAngle),
+        () -> m_coral.setBothELTR(CoralConstants.kElevatorStow, CoralConstants.ktStowAngle),
         m_coral)
         );
 
@@ -346,7 +343,7 @@ public class RobotContainer {
         // Pass through these two interior waypoints, making an 's' curve path
          List.of(new Translation2d(0.25,0), new Translation2d(0.75, 0)),
         // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(1, 0, new Rotation2d(180)),
+        new Pose2d(1, 0, new Rotation2d(0)),
         config);
 
     var thetaController = new ProfiledPIDController(
