@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -27,7 +28,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
   private final RelativeEncoder m_leftWristEncoder;
   private final RelativeEncoder m_rightWristEncoder;
-  private final RelativeEncoder m_climberEncoder;
+  private final AbsoluteEncoder m_climberEncoder;
 
   private final SparkClosedLoopController m_leftWristClosedLoopController;
   private final SparkClosedLoopController m_rightWristClosedLoopController;
@@ -42,7 +43,7 @@ public class ClimberSubsystem extends SubsystemBase {
     m_rightWristSpark = new SparkMax(ClimberConstants.krightWristCANId, MotorType.kBrushless);
     m_climberSpark = new SparkMax(ClimberConstants.kclimberCANId, MotorType.kBrushless);
     
-    m_climberEncoder = m_climberSpark.getEncoder();
+    m_climberEncoder = m_climberSpark.getAbsoluteEncoder();
     m_leftWristEncoder = m_leftWristSpark.getEncoder();
     m_rightWristEncoder = m_rightWristSpark.getEncoder();
 
@@ -85,7 +86,7 @@ public class ClimberSubsystem extends SubsystemBase {
     setRightWrist(right);
   }
 
-  public void setClimber (int climberPosition) {
+  public void setClimber (double climberPosition) {
     m_climberClosedLoopController.setReference(climberPosition, ControlType.kPosition);
   }
 

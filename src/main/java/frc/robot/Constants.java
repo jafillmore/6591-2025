@@ -216,8 +216,8 @@ public final class Constants {
     public static final int kleftWristGrab = 7;
     public static final int krightWristStow = 0;
     public static final int krightWristGrab = 7;
-    public static final int karmsUp =7;
-    public static final int karmsDown =0;
+    public static final double karmsUp =1.0; 
+    public static final double karmsDown = 0.01;
   
   }
 

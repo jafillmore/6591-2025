@@ -165,12 +165,21 @@ public final class Configs {
                     .positionWrappingEnabled(true); 
 
 
-                climberConfig
+                    double climberRotationFactor = 2 * Math.PI;
+                    climberConfig
                     .idleMode(IdleMode.kBrake)
                     .smartCurrentLimit(50)
                     .inverted(true);
 
-                
+                climberConfig.absoluteEncoder
+                    // Invert the turning encoder, since the output shaft rotates in the opposite
+                    // direction of the steering motor in the MAXSwerve Module.
+                    .inverted(false)
+                    .positionConversionFactor(climberRotationFactor) // radians
+                    .velocityConversionFactor(climberRotationFactor / 60.0); // radians per second
+
+
+
                     
                 climberConfig.closedLoop
                     .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
