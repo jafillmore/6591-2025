@@ -5,26 +5,24 @@
 package frc.robot.subsystems;
 
 
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.ctre.phoenix6.BaseStatusSignal;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.servohub.ServoChannel;
-import com.revrobotics.servohub.ServoHub;
 import com.revrobotics.servohub.ServoChannel.ChannelId;
+import com.revrobotics.servohub.ServoHub;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 
-import frc.robot.Configs;
-import frc.robot.Constants;
-import frc.robot.Constants.CoralConstants;
-import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Configs;
+import frc.robot.Constants.CoralConstants;
 
 public class CoralSubsystem extends SubsystemBase {
   /** Creates a new CoralSubsystem. */
@@ -41,7 +39,43 @@ public class CoralSubsystem extends SubsystemBase {
 
   //Variables for System Debugging
   private boolean CoralSystemDebug = true;
+
+  public Command setTroughForClearingAlgeaCommand() {
+    return this.startEnd(
+      () -> this.setTrough(CoralConstants.ktAlgeaAngle), // Start
+      () -> this.setTrough(CoralConstants.ktAlgeaAngle));  // End
+  }
   
+  public Command clearAlgeaCommand() {
+    return this.startEnd(
+      () -> this.setElevator(CoralConstants.kElevatorL4),  // Start
+      () -> this.setTrough(CoralConstants.kElevatorL4));  //End
+  }
+
+  public Command dumpCoralCommand() {
+    return this.startEnd(
+      () -> this.setTrough(CoralConstants.ktL4Angle), // Start
+      () -> this.setTrough(CoralConstants.ktL4Angle));
+  }
+
+
+ public Command stowCoralCommand() {
+    return this.startEnd(
+      () -> setBothELTR(CoralConstants.kElevatorStow, CoralConstants.ktStowAngle),
+      () -> setBothELTR(CoralConstants.kElevatorStow, CoralConstants.ktStowAngle));
+ }
+
+ public Command loadCommand() {
+    return this.startEnd(
+      () -> setTrough(CoralConstants.ktLoadAngle),
+      () -> setTrough(CoralConstants.ktLoadAngle));
+ }
+
+
+  
+
+
+
   public CoralSubsystem() {
 
     m_troughSpark = new SparkMax(CoralConstants.ktroughCANId, MotorType.kBrushless);
@@ -82,9 +116,15 @@ public class CoralSubsystem extends SubsystemBase {
     m_elevatorClosedLoopController.setReference(elevatorPosition, ControlType.kPosition);
   }
 
+  
+
+
+
   public void setTrough (double troughPosition) {
     m_troughClosedLoopController.setReference(troughPosition,ControlType.kPosition);
   }
+
+
 
   public void setBothELTR (int elevatorPsn, double troughPsn) {
     setElevator(elevatorPsn);

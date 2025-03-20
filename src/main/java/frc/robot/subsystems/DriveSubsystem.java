@@ -8,9 +8,11 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
+import choreo.trajectory.SwerveSample;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -18,9 +20,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.robot.Constants.DriveConstants;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.DriveConstants;;
 
 public class DriveSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
@@ -48,6 +51,11 @@ public class DriveSubsystem extends SubsystemBase {
   //private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
   public static final Pigeon2 m_pidgey = new Pigeon2(1, "rio");
 
+  private final PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
+  private final PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
+  private final PIDController headingController = new PIDController(AutoConstants.kPThetaController, 0, 0);
+  
+
     //Variables for Drive System Debugging
     public boolean DriveSystemDebug = false;
     private int fieldRelativeCount = 0;
@@ -68,6 +76,7 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem() {
     // Usage reporting for MAXSwerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
+    headingController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   @Override
@@ -137,6 +146,24 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearRight.setDesiredState(swerveModuleStates[3]);
   }
 
+  public void followTrajectory(SwerveSample sample) {
+        // Get the current pose of the robot
+        Pose2d pose = getPose();
+
+        // Generate the next speeds for the robot
+        ChassisSpeeds speeds = new ChassisSpeeds(
+            sample.vx + xController.calculate(pose.getX(), sample.x),
+            sample.vy + yController.calculate(pose.getY(), sample.y),
+            sample.omega + headingController.calculate(pose.getRotation().getRadians(), sample.heading)
+          
+        );
+
+        // Apply the generated speeds
+        drive(speeds.vxMetersPerSecond,speeds.vyMetersPerSecond,speeds.omegaRadiansPerSecond,true);
+  }
+
+
+
   /**
    * Sets the wheels into an X formation to prevent movement.
    */
@@ -172,14 +199,14 @@ public class DriveSubsystem extends SubsystemBase {
   public void pidgeyConfig() {
     var toApply = new Pigeon2Configuration();
 
- /* User can change the configs if they want, or leave it empty for factory-default */
- m_pidgey.getConfigurator().apply(toApply);
+    /* User can change the configs if they want, or leave it empty for factory-default */
+    m_pidgey.getConfigurator().apply(toApply);
 
- /* Speed up signals to an appropriate rate */
- m_pidgey.getYaw().setUpdateFrequency(100);
- m_pidgey.getGravityVectorZ().setUpdateFrequency(100);  
+    /* Speed up signals to an appropriate rate */
+    m_pidgey.getYaw().setUpdateFrequency(100);
+    m_pidgey.getGravityVectorZ().setUpdateFrequency(100);  
       
-}
+  }
   
   
   
@@ -227,7 +254,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   //  Drive System Debug Info to display
   public void driveDebugInfo(){
-    if (DriveSystemDebug) {
+    //if (DriveSystemDebug) {
       // IMU Status
       SmartDashboard.putBoolean(   "IMU Is Good",BaseStatusSignal.isAllGood());        
       SmartDashboard.putNumber(   "Yaw 2D", m_pidgey.getRotation2d().getDegrees());
@@ -235,7 +262,7 @@ public class DriveSubsystem extends SubsystemBase {
       SmartDashboard.putNumber(   "FC Toggle Count",       fieldRelativeCount);
       SmartDashboard.putNumber(   "IMU Reset Count",       imuResetCount);
       
-    }
+    //}
   }
 
 

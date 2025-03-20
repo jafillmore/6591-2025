@@ -4,47 +4,40 @@
 
 package frc.robot;
 
-import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 
+import choreo.Choreo;
+import choreo.auto.AutoFactory;
+import choreo.auto.AutoRoutine;
+import choreo.auto.AutoTrajectory;
+import choreo.trajectory.SwerveSample;
+import choreo.trajectory.Trajectory;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance; 
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.EventImportance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.simulation.JoystickSim;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.CoralConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-import pabeles.concurrency.ConcurrencyOps.NewInstance;
-import frc.robot.subsystems.ClimberSubsystem;
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -58,11 +51,20 @@ public class RobotContainer {
 
     UsbCamera camera1;
     VideoSink server;
+    
   
     // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final CoralSubsystem m_coral = new CoralSubsystem();
   private final ClimberSubsystem m_climb = new ClimberSubsystem();
+  private final AutoFactory autoFactory;
+
+  private final Timer timer = new Timer();
+
+
+  // Loads a swerve trajectory, alternatively use DifferentialSample if the robot is tank drive
+  private final Optional<Trajectory<SwerveSample>> trajectory = Choreo.loadTrajectory("startonwall");
+
 
   // The driver's controllers
   Joystick m_leftJoystick = new Joystick(OIConstants.kLeftControllerPort);
@@ -76,6 +78,20 @@ public class RobotContainer {
    */
   public RobotContainer() {
     
+    autoFactory = new AutoFactory(
+           m_robotDrive::getPose, // A function that returns the current robot pose
+           m_robotDrive::resetOdometry, // A function that resets the current robot pose to the provided Pose2d
+           m_robotDrive::followTrajectory, // The drive subsystem trajectory follower 
+            true, // If alliance flipping should be enabled 
+            m_robotDrive // The drive subsystem
+        );
+
+    
+
+
+
+
+
 
 
 
@@ -104,6 +120,11 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_rightJoystick.getZ(), OIConstants.kDriveDeadband),
                 DriveConstants.driveFieldRelative),
             m_robotDrive)); 
+
+
+
+
+
   }
 
   /**
@@ -268,17 +289,9 @@ public class RobotContainer {
         new InstantCommand(
         () -> m_climb.setClimber(ClimberConstants.karmsDown),
         m_climb));
-
-
-
-
-
-
-
-
-
-
   }
+
+
 
   private void configureDashboard() {
         
@@ -288,10 +301,6 @@ public class RobotContainer {
     }
   
     SmartDashboard.putString(   "Alliance", alli);
-    
-        
-    
-    
     
     
     // Log Shuffleboard events for command initialize, execute, finish, interrupt
@@ -315,59 +324,115 @@ public class RobotContainer {
             command ->
                 Shuffleboard.addEventMarker(
                     "Command interrupted", command.getName(), EventImportance.kNormal));
-     
-
-
+    
   }
 
-  /**
+
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// Initiation items for Auton
+    /// ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void autoInit() {
+        
+        if (trajectory.isPresent()) {
+            // Get the initial pose of the trajectory
+            Optional<Pose2d> initialPose = trajectory.get().getInitialPose(isRedAlliance());
+            SmartDashboard.putBoolean(   "Traj Loaded",trajectory.isPresent());
+
+            if (initialPose.isPresent()) {
+                // Reset odometry to the start of the trajectory
+                m_robotDrive.resetOdometry(initialPose.get());
+                SmartDashboard.putBoolean(   "Initial Pose",initialPose.isPresent());
+
+            }
+        }
+
+        // Reset and start the timer when the autonomous period begins
+        timer.restart();
+        SmartDashboard.putNumber("Time", timer.get());
+
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////
+    private boolean isRedAlliance() {
+    return DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red);
+    }
+    ///////////////////////////////////////////////////////////////////////////////
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
-    // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(
-        AutoConstants.kMaxSpeedMetersPerSecond,
-        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-        // Add kinematics to ensure max speed is actually obeyed
-        .setKinematics(DriveConstants.kDriveKinematics);
+    //////////////////////////////////////////////////////////////////////////
+    public Command getAutonomousCommand() {
+        
+        return Commands.sequence(
+            autoFactory.resetOdometry("startonwall"), // 
+            Commands.deadline(
+                autoFactory.trajectoryCmd("startonwall")
+                
+        ));
+    }
 
-    // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Rotate 180deg
-        //  List.of (new Rotation2d(90), new Rotation2d(90), 
-        //new Pose2d(0,0,new Rotation2d(180),
-        // Pass through these two interior waypoints, making an 's' curve path
-         List.of(new Translation2d(0.25,0), new Translation2d(0.75, 0)),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(1, 0, new Rotation2d(0)),
-        config);
+    /////////////////////////////////////////////////////////////////////////
+    /// Auto Routine to move to the reef, clear algae and score coral/
+    /// /////////////////////////////////////////////////////////////////////
 
-    var thetaController = new ProfiledPIDController(
-        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    
 
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-        exampleTrajectory,
-        m_robotDrive::getPose, // Functional interface to feed supplier
-        DriveConstants.kDriveKinematics,
+    public AutoRoutine goToReefAuto() {
+        AutoRoutine routine = autoFactory.newRoutine("scoreOnReef");
 
-        // Position controllers
-        new PIDController(AutoConstants.kPXController, 0, 0),
-        new PIDController(AutoConstants.kPYController, 0, 0),
-        thetaController,
-        m_robotDrive::setModuleStates,
-        m_robotDrive);
+        // Load the routine's trajectories
+        AutoTrajectory scoreOnReefTraj = routine.trajectory("startonwall");
 
-    // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+        // When the routine begins, reset odometry and start the first trajectory (1)
+        goToReefAuto().active().onTrue(
+            Commands.sequence(
+                scoreOnReefTraj.resetOdometry(),
+                scoreOnReefTraj.cmd()
+            )
+        );
 
-    // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
-  }
+        // Starting at the event marker named "SetTroughToClearAlgea", lower the trough 
+        scoreOnReefTraj.atTime("troughStraightOut").onTrue(m_coral.setTroughForClearingAlgeaCommand());
+        
+        // Starting at the event marker named "ClearAlgea" by raising elevator to L4 
+        scoreOnReefTraj.atTime("ClearAlgae").onTrue(m_coral.clearAlgeaCommand());
+
+        // Starting at the event marker named "DropCoarl" score by dropping the trough
+        scoreOnReefTraj.atTime("DropCoral").onTrue(m_coral.dumpCoralCommand());
+
+        return routine;
+    }
+    
+    
+    ////////////////////////////////////////////////////////////////////////////////////
+    /// Auton periodic for non-autofactory control
+   
+    public void autoPeriotic() {
+     
+        if (trajectory.isPresent()) {
+            // Sample the trajectory at the current time into the autonomous period
+           Optional<SwerveSample>   sample = trajectory.get().sampleAt(timer.get(), isRedAlliance());
+
+            if (sample.isPresent()) {
+               SmartDashboard.putBoolean(   "Sample is Present", sample.isPresent());
+               //SmartDashboard.putBoolean(   "Routine Active", goToReefAuto().active().getAsBoolean());
+               SmartDashboard.putNumber("Vx", sample.get().vx);
+               SmartDashboard.putNumber("Vy", sample.get().vy);
+               SmartDashboard.putNumber("Omega", sample.get().omega);
+            
+                m_robotDrive.followTrajectory(sample.get());
+        
+            }
+        }
+        
+    }
+
 
 
 }
