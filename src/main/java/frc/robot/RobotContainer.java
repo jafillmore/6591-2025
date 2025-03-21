@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.Optional;
 
 import choreo.Choreo;
+import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
@@ -31,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.CoralConstants;
 import frc.robot.Constants.DriveConstants;
@@ -58,8 +60,11 @@ public class RobotContainer {
   private final CoralSubsystem m_coral = new CoralSubsystem();
   private final ClimberSubsystem m_climb = new ClimberSubsystem();
   private final AutoFactory autoFactory;
+  
+  //private final AutoChooser autoChooser;
 
   private final Timer timer = new Timer();
+  String autonStatus = "Not Trying Anything";
 
 
   // Loads a swerve trajectory, alternatively use DifferentialSample if the robot is tank drive
@@ -82,9 +87,17 @@ public class RobotContainer {
            m_robotDrive::getPose, // A function that returns the current robot pose
            m_robotDrive::resetOdometry, // A function that resets the current robot pose to the provided Pose2d
            m_robotDrive::followTrajectory, // The drive subsystem trajectory follower 
-            true, // If alliance flipping should be enabled 
+            false, // If alliance flipping should be enabled 
             m_robotDrive // The drive subsystem
         );
+
+        
+        
+
+
+
+
+
 
     
 
@@ -294,6 +307,21 @@ public class RobotContainer {
     }
   
     SmartDashboard.putString(   "Alliance", alli);
+    SmartDashboard.putString("Attempted Auton", autonStatus);
+    // Create the auto chooser
+    AutoChooser autoChooser = new AutoChooser();
+
+    // Add options to the chooser
+    autoChooser.addCmd("Basic Back-Up", this::basicBackupCommand);
+    autoChooser.addRoutine("Left Wall Start - Score On Reef", this::goToReefAuto);
+    autoChooser.addCmd("Left Wall Start - Drive Only", this::trajectoryOnlyCommand);
+
+    // Put the auto chooser on the dashboard
+    SmartDashboard.putData("Options",autoChooser);
+
+
+    // Schedule the selected auto during the autonomous period
+    RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
     
     
     // Log Shuffleboard events for command initialize, execute, finish, interrupt
@@ -361,13 +389,9 @@ public class RobotContainer {
    */
     //////////////////////////////////////////////////////////////////////////
     public Command getAutonomousCommand() {
-        
-        return Commands.sequence(
-            autoFactory.resetOdometry("startonwall"), // 
-            Commands.deadline(
-                autoFactory.trajectoryCmd("startonwall")
-                
-        ));
+       
+
+        return null; //autoChooser.selectedCommand();
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -377,7 +401,10 @@ public class RobotContainer {
     
 
     public AutoRoutine goToReefAuto() {
-        AutoRoutine routine = autoFactory.newRoutine("scoreOnReef");
+        autonStatus = "Trajactory with Scoring";
+        SmartDashboard.putString("Attempting", autonStatus);
+
+        AutoRoutine routine = autoFactory.newRoutine("LeftWallStartScoreOnReef");
 
         // Load the routine's trajectories
         AutoTrajectory scoreOnReefTraj = routine.trajectory("startonwall");
@@ -415,9 +442,7 @@ public class RobotContainer {
             if (sample.isPresent()) {
                SmartDashboard.putBoolean(   "Sample is Present", sample.isPresent());
                //SmartDashboard.putBoolean(   "Routine Active", goToReefAuto().active().getAsBoolean());
-               SmartDashboard.putNumber("Vx", sample.get().vx);
-               SmartDashboard.putNumber("Vy", sample.get().vy);
-               SmartDashboard.putNumber("Omega", sample.get().omega);
+
             
                 m_robotDrive.followTrajectory(sample.get());
         
@@ -425,6 +450,41 @@ public class RobotContainer {
         }
         
     }
+
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public Command trajectoryOnlyCommand() {
+        autonStatus = "Trajectory Only Command";
+        SmartDashboard.putString("Attempting", autonStatus);
+    
+        return Commands.sequence(
+            autoFactory.resetOdometry("startonwall"), 
+            Commands.deadline(
+                autoFactory.trajectoryCmd("startonwall")
+                
+        ));
+        
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public Command basicBackupCommand() {
+        autonStatus = "Basic Backup Command";
+        SmartDashboard.putString("Attempting", autonStatus);
+        return Commands.sequence(
+            
+            Commands.runOnce(() -> m_robotDrive.drive(-.3,0,Math.PI,true)).withTimeout(3),
+       
+            Commands.runOnce(() -> m_robotDrive.drive(0, 0, 0, true)).withTimeout(2)
+        );
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 
 
 

@@ -35,7 +35,7 @@ public class ClimberSubsystem extends SubsystemBase {
   private final SparkClosedLoopController m_climberClosedLoopController;
 
     //Variables for System Debugging
-  private boolean ClimberSystemDebug = true;
+  private boolean ClimberSystemDebug = false;
 
   public ClimberSubsystem() {
 

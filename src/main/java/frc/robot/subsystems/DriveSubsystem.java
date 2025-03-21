@@ -160,6 +160,12 @@ public class DriveSubsystem extends SubsystemBase {
 
         // Apply the generated speeds
         drive(speeds.vxMetersPerSecond,speeds.vyMetersPerSecond,speeds.omegaRadiansPerSecond,true);
+        SmartDashboard.putNumber("Vx", sample.vx);
+        SmartDashboard.putNumber("Vy", sample.vy);
+        SmartDashboard.putNumber("Omega", sample.omega);
+
+
+
   }
 
 
@@ -261,6 +267,7 @@ public class DriveSubsystem extends SubsystemBase {
       SmartDashboard.putBoolean(  "Field Relative", DriveConstants.driveFieldRelative);
       SmartDashboard.putNumber(   "FC Toggle Count",       fieldRelativeCount);
       SmartDashboard.putNumber(   "IMU Reset Count",       imuResetCount);
+      
       
     //}
   }

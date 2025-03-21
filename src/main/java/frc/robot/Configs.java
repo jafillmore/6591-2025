@@ -191,9 +191,7 @@ public final class Configs {
                     // to 10 degrees will go through 0 rather than the other direction which is a
                     // longer route.
                     .positionWrappingEnabled(false);
-                  
-            
-                    
+                              
         
                 
                         
