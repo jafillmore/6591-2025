@@ -196,10 +196,10 @@ public final class Constants {
     //  constants for thee coral subsystem
 
     public static final int kleftWristCANId = 11; 
-    public static final double kleftWristPower = 0.3;
+    public static final double kleftWristPower = 0.15;
    
     public static final int krightWristCANId = 9; 
-    public static final double krightWristPower = 0.3;
+    public static final double krightWristPower = 0.15;
    
     public static final int kclimberCANId = 12;
     public static final double kclimberPower =0.3;
@@ -208,14 +208,14 @@ public final class Constants {
     public static final double kwristI = 0.0;
     public static final double kwristD = 0.0;
 
-    public static final double kclimberP =0.3;
+    public static final double kclimberP =0.85;
     public static final double kclimberI =0.0;
-    public static final double kclimberD =0.0; 
+    public static final double kclimberD =0.05; 
 
     public static final int kleftWristStow = 0;
-    public static final int kleftWristGrab = 7;
+    public static final int kleftWristGrab = -7;
     public static final int krightWristStow = 0;
-    public static final int krightWristGrab = 7;
+    public static final int krightWristGrab = -7;
     public static final double karmsUp =1.0; 
     public static final double karmsDown = 0.01;
   

@@ -88,13 +88,6 @@ public class RobotContainer {
 
     
 
-
-
-
-
-
-
-
     camera1 = CameraServer.startAutomaticCapture(0);
     
     server = CameraServer.getServer();
