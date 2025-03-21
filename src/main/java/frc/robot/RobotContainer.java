@@ -177,7 +177,7 @@ public class RobotContainer {
         m_climb));
  
     //  Toggle Drive Info to Shuffleboard
-    new JoystickButton(m_leftJoystick, OIConstants.kdriveInfoButton)
+    new JoystickButton(m_buttonboard, OIConstants.kdriveInfoButton)
     .whileTrue(new InstantCommand(
         () -> m_robotDrive.toggleDriveDebugInfo(),
          m_robotDrive));
@@ -476,14 +476,14 @@ public class RobotContainer {
         SmartDashboard.putString("Attempting", autonStatus);
         return Commands.sequence(
             
-            Commands.runOnce(() -> m_robotDrive.drive(-.3,0,Math.PI,true)).withTimeout(3),
-       
-            Commands.runOnce(() -> m_robotDrive.drive(0, 0, 0, true)).withTimeout(2)
+            Commands.run(() -> m_robotDrive.drive(-1.0,0,0,true)).withTimeout(5)
+            //Commands.waitSeconds(5),
+            //Commands.runOnce(() -> m_robotDrive.drive(0, 0, 0, true)).withTimeout(2)
         );
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+ 
 
 
 
