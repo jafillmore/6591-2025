@@ -167,7 +167,7 @@ public final class Constants {
     public static final double ktL2Angle = 2.0;
     public static final double ktL3Angle = 2.0;
     public static final double ktL4Angle = 2.1; //2.5 was too much
-    public static final double ktStowAngle =0.05;
+    public static final double ktStowAngle =0.1;
     public static final double ktAlgeaAngle = 2.0;
     
     public static final double kelevtorP = 0.6;
