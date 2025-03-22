@@ -158,7 +158,7 @@ public final class Constants {
     public static final int kelevatorCANId = 10;
     public static final double kelevatorPower = 0.3;
     
-    public static final double ktroughP = 0.5;
+    public static final double ktroughP = 0.75;
     public static final double ktroughI = 0.0;
     public static final double ktroughD = 0.01;
 
@@ -168,7 +168,7 @@ public final class Constants {
     public static final double ktL3Angle = 2.0;
     public static final double ktL4Angle = 2.1; //2.5 was too much
     public static final double ktStowAngle =0.05;
-    public static final double ktAlgeaAngle = 1.3963;
+    public static final double ktAlgeaAngle = 2.0;
     
     public static final double kelevtorP = 0.6;
     public static final double kelevtorI = 0.0;
