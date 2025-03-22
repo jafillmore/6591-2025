@@ -68,7 +68,11 @@ public class RobotContainer {
 
 
   // Loads a swerve trajectory, alternatively use DifferentialSample if the robot is tank drive
-  private final Optional<Trajectory<SwerveSample>> trajectory = Choreo.loadTrajectory("startonwall");
+  //private final Optional<Trajectory<SwerveSample>> trajectory = Choreo.loadTrajectory("leftWallToReef");
+  //private final Optional<Trajectory<SwerveSample>> trajectory = Choreo.loadTrajectory("leftWallOutOfTheWay");
+  //private final Optional<Trajectory<SwerveSample>> trajectory = Choreo.loadTrajectory("rightWallToReef");
+  //private final Optional<Trajectory<SwerveSample>> trajectory = Choreo.loadTrajectory("rightWallOutOfTheWay");
+
 
 
   // The driver's controllers
@@ -312,9 +316,10 @@ public class RobotContainer {
     AutoChooser autoChooser = new AutoChooser();
 
     // Add options to the chooser
-    autoChooser.addCmd("Basic Back-Up", this::basicBackupCommand);
-    autoChooser.addRoutine("Left Wall Start - Score On Reef", this::goToReefAuto);
-    autoChooser.addCmd("Left Wall Start - Drive Only", this::trajectoryOnlyCommand);
+    autoChooser.addCmd("Left out of the way", this::leftOutOfTheWayCommand);
+    autoChooser.addCmd("Left to Reef", this::leftToReefCommand);
+    autoChooser.addCmd("Right to Reef", this::rightToReefCommand);
+    autoChooser.addCmd("Right out of the way", this::rightOutOfTheWayCommand);
 
     // Put the auto chooser on the dashboard
     SmartDashboard.putData("Options",autoChooser);
@@ -354,7 +359,7 @@ public class RobotContainer {
     /// ///////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void autoInit() {
-        
+       /* 
         if (trajectory.isPresent()) {
             // Get the initial pose of the trajectory
             Optional<Pose2d> initialPose = trajectory.get().getInitialPose(isRedAlliance());
@@ -371,6 +376,7 @@ public class RobotContainer {
         // Reset and start the timer when the autonomous period begins
         timer.restart();
         SmartDashboard.putNumber("Time", timer.get());
+        */
 
     }
 
@@ -400,7 +406,7 @@ public class RobotContainer {
 
     
 
-    public AutoRoutine goToReefAuto() {
+    public AutoRoutine scroreOnReefLeftAuto() {
         autonStatus = "Trajactory with Scoring";
         SmartDashboard.putString("Attempting", autonStatus);
 
@@ -410,7 +416,7 @@ public class RobotContainer {
         AutoTrajectory scoreOnReefTraj = routine.trajectory("startonwall");
 
         // When the routine begins, reset odometry and start the first trajectory (1)
-        goToReefAuto().active().onTrue(
+        scroreOnReefLeftAuto().active().onTrue(
             Commands.sequence(
                 scoreOnReefTraj.resetOdometry(),
                 scoreOnReefTraj.cmd()
@@ -434,7 +440,7 @@ public class RobotContainer {
     /// Auton periodic for non-autofactory control
    
     public void autoPeriotic() {
-     
+        /* 
         if (trajectory.isPresent()) {
             // Sample the trajectory at the current time into the autonomous period
            Optional<SwerveSample>   sample = trajectory.get().sampleAt(timer.get(), isRedAlliance());
@@ -448,25 +454,76 @@ public class RobotContainer {
         
             }
         }
+        */
         
     }
 
 
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public Command trajectoryOnlyCommand() {
-        autonStatus = "Trajectory Only Command";
+    public Command leftToReefCommand() {
+        autonStatus = "Left Wall to Reef";
         SmartDashboard.putString("Attempting", autonStatus);
     
         return Commands.sequence(
-            autoFactory.resetOdometry("startonwall"), 
+            autoFactory.resetOdometry("leftWallToReef"), 
             Commands.deadline(
-                autoFactory.trajectoryCmd("startonwall")
+                autoFactory.trajectoryCmd("leftWallToReef")
                 
         ));
         
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public Command leftOutOfTheWayCommand() {
+        autonStatus = "Left Wall out of the way";
+        SmartDashboard.putString("Attempting", autonStatus);
+
+        return Commands.sequence(
+            autoFactory.resetOdometry("leftWallOutOftheWay"), 
+            Commands.deadline(
+                autoFactory.trajectoryCmd("leftWallOutOftheWay")
+                
+        ));
+        
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public Command rightToReefCommand() {
+        autonStatus = "Right Wall to Reef";
+        SmartDashboard.putString("Attempting", autonStatus);
+
+        return Commands.sequence(
+            autoFactory.resetOdometry("rightWallToReef"), 
+            Commands.deadline(
+                autoFactory.trajectoryCmd("rightWallToReef")
+                
+        ));
+        
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public Command rightOutOfTheWayCommand() {
+        autonStatus = "RightOutOfTheWay";
+        SmartDashboard.putString("Attempting", autonStatus);
+
+        return Commands.sequence(
+            autoFactory.resetOdometry("rightWallOutOfTheWay"), 
+            Commands.deadline(
+                autoFactory.trajectoryCmd("rightWallOutOfTheWay")
+                
+        ));
+        
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
 
