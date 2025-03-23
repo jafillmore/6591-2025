@@ -85,7 +85,7 @@ public final class Constants {
 
   public static final class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 1.5;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 2.5;
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
@@ -144,6 +144,7 @@ public final class Constants {
     public static final int kCoralInfoButton = 24;
     public static final int kClimberInfoButton = 23;
     public static final int kdriveInfoButton = 22; // Moved from left stick
+    public static final int kresetWristEncodersButton = 21;
   
 
   }
@@ -212,12 +213,14 @@ public final class Constants {
     public static final double kclimberI =0.0;
     public static final double kclimberD =0.05; 
 
-    public static final int kleftWristStow = 0;
-    public static final int kleftWristGrab = 7;
-    public static final int krightWristStow = 0;
-    public static final int krightWristGrab = 7;
+    public static final int kleftWristStow = 1;
+    public static final int kleftWristGrab = 9;
+    public static final int krightWristStow = 1;
+    public static final int krightWristGrab = 9;
     public static final double karmsUp =1.0; 
     public static final double karmsDown = 0.01;
+    public static final double kwristInPower = -0.2;
+    public static final double kwristOutPower =0.1;
   
   }
 

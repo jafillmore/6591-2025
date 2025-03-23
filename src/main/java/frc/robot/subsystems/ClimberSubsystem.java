@@ -35,7 +35,7 @@ public class ClimberSubsystem extends SubsystemBase {
   private final SparkClosedLoopController m_climberClosedLoopController;
 
     //Variables for System Debugging
-  private boolean ClimberSystemDebug = false;
+  private boolean ClimberSystemDebug;
 
   public ClimberSubsystem() {
 
@@ -80,10 +80,21 @@ public class ClimberSubsystem extends SubsystemBase {
     m_rightWristClosedLoopController.setReference(rightwristPosition, ControlType.kPosition);
   }
  
-
+  /* 
   public void setWrists (int left, int right) {
     setLeftWrist(left);
     setRightWrist(right);
+  }
+  */
+
+  public void wristsIn (double wristPower){
+    m_leftWristSpark.set(wristPower);
+    m_rightWristSpark.set(wristPower);}
+  
+
+  public void resetWristEncoders () {
+    m_leftWristEncoder.setPosition(0);
+    m_rightWristEncoder.setPosition(0);
   }
 
   public void setClimber (double climberPosition) {

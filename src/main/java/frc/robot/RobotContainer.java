@@ -51,8 +51,8 @@ public class RobotContainer {
     Optional<Alliance> ally = DriverStation.getAlliance();
     private String alli = "None! (What's up with that?)";
 
-    UsbCamera camera1;
-    VideoSink server;
+    //UsbCamera camera1;
+    //VideoSink server;
     
   
     // The robot's subsystems
@@ -103,11 +103,16 @@ public class RobotContainer {
 
 
 
-    
+        UsbCamera camera = CameraServer.startAutomaticCapture();
+        camera.setFPS (10);
 
-    camera1 = CameraServer.startAutomaticCapture(0);
+
+
+    //camera1 = CameraServer.startAutomaticCapture(0);
     
-    server = CameraServer.getServer();
+    //server = CameraServer.getServer();
+
+    
     
     // Run configuration options for Pigeon 2 navigation module
     m_robotDrive.pidgeyConfig();
@@ -173,7 +178,7 @@ public class RobotContainer {
     .whileTrue(new InstantCommand(
         () -> m_coral.toggleCoralebugInfo(),
         m_coral));
-
+  
     //  Toggle Climber Info to Shuffleboard
     new JoystickButton(m_buttonboard, OIConstants.kClimberInfoButton)
     .whileTrue(new InstantCommand(
@@ -249,18 +254,21 @@ public class RobotContainer {
     // Trough Level 1
     new JoystickButton (m_buttonboard,OIConstants.kL1TButton)
     .whileTrue(new InstantCommand(
-        () -> m_coral.setTrough(CoralConstants.ktL1Angle),
+        () -> m_coral.setTrough(CoralConstants.ktAlgeaAngle),
         m_coral));
+
     // Trough Level 2
     new JoystickButton (m_buttonboard,OIConstants.kL2TButton)
     .whileTrue(new InstantCommand(
         () -> m_coral.setTrough(CoralConstants.ktL2Angle),
         m_coral));
+
     // Trough Level 3
     new JoystickButton (m_buttonboard,OIConstants.kL3TButton)
     .whileTrue(new InstantCommand(
         () -> m_coral.setTrough(CoralConstants.ktL3Angle),
         m_coral));
+
     // Trough Level 4
     new JoystickButton (m_buttonboard,OIConstants.kL4TButton)
     .whileTrue(new InstantCommand(
@@ -268,23 +276,33 @@ public class RobotContainer {
         m_coral));
 
 
-
-    // Wrists Out
+    // Wrists Out Manual Control
     new JoystickButton (m_buttonboard,OIConstants.kWristOutButton)
-    .whileTrue(Commands.parallel(
-        new InstantCommand(
-        () -> m_climb.setWrists(ClimberConstants.kleftWristGrab, ClimberConstants.krightWristGrab),
-        m_climb)
-        
-        
-        ));
+    .onTrue(new InstantCommand(
+        () -> m_climb.wristsIn(ClimberConstants.kwristOutPower),
+        m_climb))
+    .onFalse(new InstantCommand(
+        () -> m_climb.wristsIn(0.0),
+        m_climb));
+    
+    
+    
     // Wrist In
     new JoystickButton (m_buttonboard,OIConstants.kWristInButton)
-    .whileTrue(Commands.parallel(
-        new InstantCommand(
-        () -> m_climb.setWrists(ClimberConstants.kleftWristStow, ClimberConstants.krightWristStow),
-        m_climb) 
-        ));
+    .onTrue(new InstantCommand(
+        () -> m_climb.wristsIn(ClimberConstants.kwristInPower),
+        m_climb))
+    .onFalse(new InstantCommand(
+        () -> m_climb.wristsIn(0.0),
+        m_climb));
+
+
+
+    // Reset Wrist Encoders
+    new JoystickButton (m_buttonboard,OIConstants.kresetWristEncodersButton)
+    .whileTrue(new InstantCommand(
+        () -> m_climb.resetWristEncoders(),
+        m_climb));
 
     //  Arms Up
     new JoystickButton (m_buttonboard,OIConstants.kArmsUpButton)
@@ -482,9 +500,9 @@ public class RobotContainer {
         SmartDashboard.putString("Attempting", autonStatus);
 
         return Commands.sequence(
-            autoFactory.resetOdometry("leftWallOutOftheWay"), 
+            autoFactory.resetOdometry("leftWallOutOfTheWay"), 
             Commands.deadline(
-                autoFactory.trajectoryCmd("leftWallOutOftheWay")
+                autoFactory.trajectoryCmd("leftWallOutOfTheWay")
                 
         ));
         
