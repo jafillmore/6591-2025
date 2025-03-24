@@ -103,8 +103,8 @@ public class RobotContainer {
 
 
 
-        UsbCamera camera = CameraServer.startAutomaticCapture();
-        camera.setFPS (10);
+        CameraServer.startAutomaticCapture();
+        //camera.setFPS (30);
 
 
 
